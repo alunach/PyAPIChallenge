@@ -1,10 +1,10 @@
-__pycache__/
+.git
+.gitignore
+.venv
+__pycache__
 *.pyc
 *.pyo
 *.pyd
+*.db
 .env
-.venv/
-venv/
-.git/
-.pytest_cache/
-local.db
+tests/

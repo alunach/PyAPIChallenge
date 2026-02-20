@@ -1,149 +1,211 @@
 # 1 User Management API
 
-### FastAPI + Docker + Google Cloud Run (Enterprise Deployment)
+Production-oriented FastAPI service implementing a user CRUD API with:
+- Clean architecture (router → service → repository)
+- SQLAlchemy 2.0 + Alembic migrations
+- Strong validation with Pydantic (EmailStr, enums, constraints)
+- Structured logging + request id
+- Health endpoints
+- Comprehensive pytest suite + coverage
+- Cloud Build pipeline: test → build → deploy to Cloud Run
 
 ------------------------------------------------------------------------
 
-## 2 Overview
-
-This project implements a production-ready RESTful API for user
-management using **FastAPI**, deployed in **Google Cloud Platform
-(GCP)** using:
-
--   Cloud Build (CI)
--   Artifact Registry (Container storage)
--   Cloud Run (Serverless runtime)
--   IAM (Security & permissions)
--   Docker (Containerization)
-
-The service follows clean architecture principles and is designed to be
-scalable, maintainable, and cloud-native.
+## 1.1. API base
+- **Base path:** `/api/v1`
+- **Docs:** `/api/v1/docs`
+- **OpenAPI:** `/api/v1/openapi.json`
 
 ------------------------------------------------------------------------
 
-## 3 Architecture Overview
+## 1.2. Endpoints
+### Health
+- `GET /api/v1/health/live`
+- `GET /api/v1/health/ready`
 
-Client → Cloud Run → FastAPI → SQLAlchemy → Database
-
-CI/CD Flow:
-
-Cloud Build → Artifact Registry → Cloud Run
-
-------------------------------------------------------------------------
-
-## 4 Tech Stack
-
--   Python 3.11
--   FastAPI
--   SQLAlchemy 2.x
--   Pydantic v2
--   Docker
--   Google Cloud Build
--   Google Artifact Registry
--   Google Cloud Run
+### 1.2.1. Users
+- `POST   /api/v1/users`
+- `GET    /api/v1/users?active=true&limit=50&offset=0`
+- `GET    /api/v1/users/{user_id}`
+- `PUT    /api/v1/users/{user_id}`
+- `DELETE /api/v1/users/{user_id}` (soft delete: sets `active=false`)
 
 ------------------------------------------------------------------------
 
-## 5 Project Structure
+## 1.3. Running locally
+```bash
+python -m venv .venv
+# Windows: .venv\Scripts\activate
+source .venv/bin/activate
+pip install -r requirements.txt
 
-app/ 
-├── api/ 
-├── core/ 
-├── db/ 
-├── schemas/ 
-├── services/ 
-└── main.py
-tests/ 
-Dockerfile 
-cloudbuild.yaml 
-requirements.txt 
-README.md
+# Use SQLite by default
+export DATABASE_URL="sqlite:///./app.db" 
+# Windows: set DATABASE_URL=sqlite:///./app.db
+alembic upgrade head
+uvicorn app.main:app --reload --port 8080
+```
+
+Open:
+- http://localhost:8080/api/v1/docs
 
 ------------------------------------------------------------------------
 
-# 6 Google Cloud Deployment Guide
+## 1.4. Example API calls
+Create:
+```bash
+curl -i -X POST http://localhost:8080/api/v1/users \
+  -H "Content-Type: application/json" \
+  -d '{"username":"alex01","email":"alex01@example.com","first_name":"Alex","last_name":"Test","role":"user"}'
+```
 
-## 6.1. Environment Variables (Windows CMD)
+List:
+```bash
+curl -i "http://localhost:8080/api/v1/users?limit=50&offset=0"
+```
 
+Get:
+```bash
+curl -i http://localhost:8080/api/v1/users/<USER_ID>
+```
 
-set PROJECT_ID=project-a716xxxx-63xx-4fxx-bxx
+Update:
+```bash
+curl -i -X PUT http://localhost:8080/api/v1/users/<USER_ID> \
+  -H "Content-Type: application/json" \
+  -d '{"role":"admin","active":true}'
+```
+
+Soft delete:
+```bash
+curl -i -X DELETE http://localhost:8080/api/v1/users/<USER_ID>
+```
+
+------------------------------------------------------------------------
+
+## 1.5. Testing
+```bash
+pytest -q --cov=app --cov-report=term-missing
+```
+
+------------------------------------------------------------------------
+
+## 1.6. Configuration
+Environment variables (see `.env.example`):
+- `DATABASE_URL` (default: `sqlite:///./app.db`)
+- `LOG_LEVEL` (default: `INFO`)
+- `APP_NAME` (default: `user-api`)
+
+------------------------------------------------------------------------
+
+## 1.7. Deploy (Cloud Build + Cloud Run)
+This repository includes `cloudbuild.yaml` that:
+1) runs unit tests
+2) builds Docker image and pushes to Artifact Registry
+3) deploys to Cloud Run
+
+Update variables in `cloudbuild.yaml`:
+- `_REGION`
+- `_SERVICE_NAME`
+- `_REPO`
+- `_IMAGE`
+
+Then run:
+```bash
+gcloud builds submit --config cloudbuild.yaml
+```
+
+------------------------------------------------------------------------
+
+### 1.7.1. Environment Variables (Windows CMD)
+set PROJECT_ID=project-a71xxxxx-63xx-4fxx-bxx
+set PROJECT_NUMBER=497xxxxxxxx
 set REGION=us-central1
 set REPO=user-api-repo
 set IMAGE=user-api
 
 ------------------------------------------------------------------------
 
-## 6.2. Enable Required APIs
+### 1.7.2. Enable Required APIs
 
 gcloud services enable artifactregistry.googleapis.com cloudbuild.googleapis.com run.googleapis.com logging.googleapis.com
 
 ------------------------------------------------------------------------
 
-## 6.3. IAM Configuration
+### 1.7.3. IAM Configuration
 
 Grant minimal required permissions:
 
-gcloud projects add-iam-policy-binding %PROJECT_ID% --member="serviceAccount:PROJECT_NUMBER@cloudbuild.gserviceaccount.com" --role="roles/artifactregistry.writer"
+gcloud projects add-iam-policy-binding %PROJECT_ID% --member="serviceAccount:%PROJECT_NUMBER%-compute@developer.gserviceaccount.com" --role="roles/logging.logWriter"
 
-gcloud projects add-iam-policy-binding %PROJECT_ID% --member="serviceAccount:PROJECT_NUMBER-compute@developer.gserviceaccount.com" --role="roles/logging.logWriter"
+gcloud projects add-iam-policy-binding %PROJECT_ID% --member="serviceAccount:%PROJECT_NUMBER%@cloudbuild.gserviceaccount.com" --role="roles/run.admin"
+
+gcloud projects add-iam-policy-binding %PROJECT_ID% --member="serviceAccount:%PROJECT_NUMBER%@cloudbuild.gserviceaccount.com" --role="roles/iam.serviceAccountUser"
+
+gcloud projects add-iam-policy-binding %PROJECT_ID% --member="serviceAccount:%PROJECT_NUMBER%@cloudbuild.gserviceaccount.com" --role="roles/artifactregistry.writer"
+
+gcloud projects add-iam-policy-binding %PROJECT_ID% --member="serviceAccount:%PROJECT_NUMBER%-compute@developer.gserviceaccount.com" --role="roles/run.admin"
+
+gcloud projects add-iam-policy-binding %PROJECT_ID% --member="serviceAccount:%PROJECT_NUMBER%-compute@developer.gserviceaccount.com" --role="roles/iam.serviceAccountUser"
+
+gcloud projects add-iam-policy-binding %PROJECT_ID% --member="serviceAccount:%PROJECT_NUMBER%-compute@developer.gserviceaccount.com" --role="roles/artifactregistry.writer"
+
+
 
 ------------------------------------------------------------------------
 
-## 6.4. Create Artifact Registry Repository
+### 1.7.4. Create Artifact Registry Repository
 
 gcloud artifacts repositories create %REPO% --repository-format=docker --location=%REGION% --description="Docker repository for user-api"
 
 ------------------------------------------------------------------------
 
-## 7 Build & Push Container
+### 1.7.5. Build & Push Container
 
 gcloud builds submit --tag %REGION%-docker.pkg.dev/%PROJECT_ID%/%REPO%/%IMAGE%
 
-
-------------------------------------------------------------------------
-
-## 8 Deploy to Cloud Run
-
 gcloud run deploy %IMAGE% --image %REGION%-docker.pkg.dev/%PROJECT_ID%/%REPO%/%IMAGE% --region %REGION% --platform managed --allow-unauthenticated
 
+or:
+
+```bash
+gcloud builds submit --config cloudbuild.yaml
+```
   
 ------------------------------------------------------------------------
 
-# 9 Live Service
+### 1.7.7. Live Service
 
 https://user-api-497614916082.us-central1.run.app
 
 ------------------------------------------------------------------------
 
-# 10 Testing the API
+### 1.7.8. Testing the API
 
-## Health Check
+### Health Check
 
 GET /healthz
 
-Example: https://user-api-497614916082.us-central1.run.app/api/healthz
+Example: https://user-api-497xxxxxxxx.us-central1.run.app/api/v1/healthz
 
 Response: { "status": "ok" }
 
-------------------------------------------------------------------------
 
-## 11 Swagger Documentation
+### Swagger Documentation
 
 /docs
 
-Example: https://user-api-497614916082.us-central1.run.app/docs
+Example: https://user-api-497xxxxxxxx.us-central1.run.app/api/v1/docs
 
-------------------------------------------------------------------------
+### Create User Example
 
-## 12 Create User Example
-
-curl -X POST https://user-api-497614916082.us-central1.run.app/users -H
+curl -X POST https://user-api-497xxxxxxxx.us-central1.run.app/users -H
 "Content-Type: application/json" -d
 "{"username":"alex","email":"alex@test.com","role":"admin"}"
 
 ------------------------------------------------------------------------
 
-# 13 Security Considerations
+### 1.7.9. Security Considerations
 
 -   IAM principle of least privilege
 -   Serverless infrastructure
@@ -153,7 +215,7 @@ curl -X POST https://user-api-497614916082.us-central1.run.app/users -H
 
 ------------------------------------------------------------------------
 
-# 14 Scalability
+### 1.7.10. Scalability
 
 Cloud Run provides:
 
@@ -165,7 +227,7 @@ Cloud Run provides:
 
 ------------------------------------------------------------------------
 
-# 15 CI/CD Strategy
+### 1.7.11. CI/CD Strategy
 
 cloudbuild.yaml automates:
 
@@ -176,25 +238,18 @@ cloudbuild.yaml automates:
 
 ------------------------------------------------------------------------
 
-# 16 Challenge Submission JSON
+### 1.7.12. Local Verifitacion with Docker
 
-{ "name": "Your Name", "mail": "your@email.com", "github_url":
-"https://github.com/youruser/PyAPIChallenge.git", "api_url":
-"https://user-api-497614916082.us-central1.run.app" }
-
-------------------------------------------------------------------------
-
-# 17 Verificación local
-
-Antes de desplegar, prueba local con Docker:
+Before deploying, test locally with Docker:
 
 docker build -t user-api .
 docker run --rm -p 8080:8080 user-api
 
 
-Luego abre:
+Then open URLs:
 
-http://localhost:8080/healthz
+http://localhost:8080/api/v1/healthz
 
-http://localhost:8080/docs
+http://localhost:8080/api/v1/docs
 
+...

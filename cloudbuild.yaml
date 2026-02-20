@@ -1,21 +1,37 @@
 substitutions:
-  _SERVICE_NAME: user-api
   _REGION: us-central1
+  _REPO: user-api-repo
+  _IMAGE: user-api
+  _SERVICE: user-api
 
 steps:
-  - name: "gcr.io/cloud-builders/docker"
-    args: ["build", "-t", "gcr.io/$PROJECT_ID/${_SERVICE_NAME}:$SHORT_SHA", "."]
+  - name: "python:3.11"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        pip install -r requirements.txt
+        pytest -q --disable-warnings --maxfail=1
 
   - name: "gcr.io/cloud-builders/docker"
-    args: ["push", "gcr.io/$PROJECT_ID/${_SERVICE_NAME}:$SHORT_SHA"]
+    args:
+      - "build"
+      - "-t"
+      - "${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_IMAGE}:latest"
+      - "."
+
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      - "push"
+      - "${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_IMAGE}:latest"
 
   - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
     entrypoint: "gcloud"
     args:
-      [
-        "run","deploy","${_SERVICE_NAME}",
-        "--image","gcr.io/$PROJECT_ID/${_SERVICE_NAME}:$SHORT_SHA",
-        "--region","${_REGION}",
-        "--platform","managed",
-        "--allow-unauthenticated"
-      ]
+      - "run"
+      - "deploy"
+      - "${_SERVICE}"
+      - "--image=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_IMAGE}:latest"
+      - "--region=${_REGION}"
+      - "--platform=managed"
+      - "--allow-unauthenticated"

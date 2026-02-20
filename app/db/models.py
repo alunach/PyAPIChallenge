@@ -1,33 +1,29 @@
+from __future__ import annotations
+
 import uuid
-from datetime import datetime
-from sqlalchemy import Boolean, DateTime, String, Index
+from datetime import datetime, timezone
+
+from sqlalchemy import Boolean, DateTime, String
 from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy.dialects.postgresql import UUID as PG_UUID
+
 from app.db.base import Base
 
-def _uuid_type():
-    # Use native UUID on Postgres, CHAR(32) for SQLite
-    try:
-        return PG_UUID(as_uuid=True)
-    except Exception:
-        return String(36)
+def utcnow() -> datetime:
+    return datetime.now(timezone.utc)
 
 class User(Base):
     __tablename__ = "users"
 
-    id: Mapped[uuid.UUID] = mapped_column(PG_UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    username: Mapped[str] = mapped_column(String(50), unique=True, index=True, nullable=False)
-    email: Mapped[str] = mapped_column(String(255), unique=True, index=True, nullable=False)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    username: Mapped[str] = mapped_column(String(50), nullable=False, unique=True, index=True)
+    email: Mapped[str] = mapped_column(String(254), nullable=False, unique=True, index=True)
+
     first_name: Mapped[str | None] = mapped_column(String(100), nullable=True)
     last_name: Mapped[str | None] = mapped_column(String(100), nullable=True)
+
     role: Mapped[str] = mapped_column(String(20), nullable=False, default="user")
 
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow, nullable=False)
-    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow, nullable=False)
 
-    active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
-
-    __table_args__ = (
-        Index("ix_users_username_lower", "username"),
-        Index("ix_users_email_lower", "email"),
-    )
+    active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True, index=True)
