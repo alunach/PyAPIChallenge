@@ -1,0 +1,744 @@
+{
+	"info": {
+		"_postman_id": "cad438fa-3711-46ea-853b-801c8db15c56",
+		"name": "users",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29179828"
+	},
+	"item": [
+		{
+			"name": "LOCAL",
+			"item": [
+				{
+					"name": "LIVE HEALTH LOCAL",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8080/api/v1/health/live",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"health",
+								"live"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "READY HEALTH LOCAL",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8080/api/v1/health/ready",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"health",
+								"ready"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CREATE USER LOCAL",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"username\":\"alex01\",\"email\":\"alex01@example.com\",\"first_name\":\"Alex\",\"last_name\":\"Test\",\"role\":\"user\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/api/v1/users",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"users"
+							]
+						},
+						"description": "Generated from cURL: curl -i -X POST http://localhost:8080/api/v1/users \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"username\":\"alex01\",\"email\":\"alex01@example.com\",\"first_name\":\"Alex\",\"last_name\":\"Test\",\"role\":\"user\"}'"
+					},
+					"response": [
+						{
+							"name": "CREATE USER alex01",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"username\":\"alex01\",\"email\":\"alex01@example.com\",\"first_name\":\"Alex\",\"last_name\":\"Test\",\"role\":\"user\"}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://user-api-497614916082.us-central1.run.app/api/v1/users",
+									"protocol": "https",
+									"host": [
+										"user-api-497614916082",
+										"us-central1",
+										"run",
+										"app"
+									],
+									"path": [
+										"api",
+										"v1",
+										"users"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "LIST USER LOCAL",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8080/api/v1/users?limit=50&offset=0",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"users"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "50"
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								}
+							]
+						},
+						"description": "Generated from cURL: curl -i \"http://localhost:8080/api/v1/users?limit=50&offset=0\""
+					},
+					"response": []
+				},
+				{
+					"name": "UPDATE USER LOCAL",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"role\":\"admin\",\"active\":true}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/api/v1/users/e16fbb86-7e58-4a09-b506-524c7fe85956",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"e16fbb86-7e58-4a09-b506-524c7fe85956"
+							]
+						},
+						"description": "Generated from cURL: curl -i -X PUT http://localhost:8080/api/v1/users/<USER_ID> \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"role\":\"admin\",\"active\":true}'"
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE USER LOCAL",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8080/api/v1/users/e16fbb86-7e58-4a09-b506-524c7fe85956",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"e16fbb86-7e58-4a09-b506-524c7fe85956"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LIVE HEALTH LOCAL",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8080/api/v1/health/live",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"health",
+								"live"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "READY HEALTH LOCAL",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8080/api/v1/health/ready",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"health",
+								"ready"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CREATE USER LOCAL",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"username\":\"alex01\",\"email\":\"alex01@example.com\",\"first_name\":\"Alex\",\"last_name\":\"Test\",\"role\":\"user\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/api/v1/users",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"users"
+							]
+						},
+						"description": "Generated from cURL: curl -i -X POST http://localhost:8080/api/v1/users \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"username\":\"alex01\",\"email\":\"alex01@example.com\",\"first_name\":\"Alex\",\"last_name\":\"Test\",\"role\":\"user\"}'"
+					},
+					"response": [
+						{
+							"name": "CREATE USER alex01",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"username\":\"alex01\",\"email\":\"alex01@example.com\",\"first_name\":\"Alex\",\"last_name\":\"Test\",\"role\":\"user\"}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://user-api-497614916082.us-central1.run.app/api/v1/users",
+									"protocol": "https",
+									"host": [
+										"user-api-497614916082",
+										"us-central1",
+										"run",
+										"app"
+									],
+									"path": [
+										"api",
+										"v1",
+										"users"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "LIST USER LOCAL",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8080/api/v1/users?limit=50&offset=0",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"users"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "50"
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								}
+							]
+						},
+						"description": "Generated from cURL: curl -i \"http://localhost:8080/api/v1/users?limit=50&offset=0\""
+					},
+					"response": []
+				},
+				{
+					"name": "UPDATE USER LOCAL",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"role\":\"admin\",\"active\":true}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/api/v1/users/e16fbb86-7e58-4a09-b506-524c7fe85956",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"e16fbb86-7e58-4a09-b506-524c7fe85956"
+							]
+						},
+						"description": "Generated from cURL: curl -i -X PUT http://localhost:8080/api/v1/users/<USER_ID> \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"role\":\"admin\",\"active\":true}'"
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE USER LOCAL",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8080/api/v1/users/e16fbb86-7e58-4a09-b506-524c7fe85956",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"e16fbb86-7e58-4a09-b506-524c7fe85956"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "DEV",
+			"item": [
+				{
+					"name": "LIVE HEALTH",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://user-api-497614916082.us-central1.run.app/api/v1/health/live",
+							"protocol": "https",
+							"host": [
+								"user-api-497614916082",
+								"us-central1",
+								"run",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"health",
+								"live"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "READY HEALTH",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://user-api-497614916082.us-central1.run.app/api/v1/health/ready",
+							"protocol": "https",
+							"host": [
+								"user-api-497614916082",
+								"us-central1",
+								"run",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"health",
+								"ready"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CREATE USER",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"username\":\"alex01\",\"email\":\"alex01@example.com\",\"first_name\":\"Alex\",\"last_name\":\"Test\",\"role\":\"user\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://user-api-497614916082.us-central1.run.app/api/v1/users",
+							"protocol": "https",
+							"host": [
+								"user-api-497614916082",
+								"us-central1",
+								"run",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users"
+							]
+						},
+						"description": "Generated from cURL: curl -i -X POST http://localhost:8080/api/v1/users \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"username\":\"alex01\",\"email\":\"alex01@example.com\",\"first_name\":\"Alex\",\"last_name\":\"Test\",\"role\":\"user\"}'"
+					},
+					"response": [
+						{
+							"name": "CREATE USER alex01",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"username\":\"alex01\",\"email\":\"alex01@example.com\",\"first_name\":\"Alex\",\"last_name\":\"Test\",\"role\":\"user\"}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://user-api-497614916082.us-central1.run.app/api/v1/users",
+									"protocol": "https",
+									"host": [
+										"user-api-497614916082",
+										"us-central1",
+										"run",
+										"app"
+									],
+									"path": [
+										"api",
+										"v1",
+										"users"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						},
+						{
+							"name": "CREATE USER lesly02",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"username\":\"lesly02\",\"email\":\"lesly02@example.com\",\"first_name\":\"Lesy\",\"last_name\":\"Test02\",\"role\":\"admin\"}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://user-api-497614916082.us-central1.run.app/api/v1/users",
+									"protocol": "https",
+									"host": [
+										"user-api-497614916082",
+										"us-central1",
+										"run",
+										"app"
+									],
+									"path": [
+										"api",
+										"v1",
+										"users"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "LIST USER",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://user-api-497614916082.us-central1.run.app/api/v1/users?limit=50&offset=0",
+							"protocol": "https",
+							"host": [
+								"user-api-497614916082",
+								"us-central1",
+								"run",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "50"
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								}
+							]
+						},
+						"description": "Generated from cURL: curl -i \"http://localhost:8080/api/v1/users?limit=50&offset=0\""
+					},
+					"response": []
+				},
+				{
+					"name": "UPDATE USER",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"role\":\"admin\",\"active\":true}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://user-api-497614916082.us-central1.run.app/api/v1/users/71b31d9b-1312-4e7a-b2af-a65311347348",
+							"protocol": "https",
+							"host": [
+								"user-api-497614916082",
+								"us-central1",
+								"run",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"71b31d9b-1312-4e7a-b2af-a65311347348"
+							]
+						},
+						"description": "Generated from cURL: curl -i -X PUT http://localhost:8080/api/v1/users/<USER_ID> \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"role\":\"admin\",\"active\":true}'"
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE USER",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://user-api-497614916082.us-central1.run.app/api/v1/users/71b31d9b-1312-4e7a-b2af-a65311347348",
+							"protocol": "https",
+							"host": [
+								"user-api-497614916082",
+								"us-central1",
+								"run",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"71b31d9b-1312-4e7a-b2af-a65311347348"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

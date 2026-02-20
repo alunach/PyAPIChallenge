@@ -118,17 +118,22 @@ gcloud builds submit --config cloudbuild.yaml
 ------------------------------------------------------------------------
 
 ### 1.7.1. Environment Variables (Windows CMD)
+
+```bash
 set PROJECT_ID=project-a71xxxxx-63xx-4fxx-bxx
 set PROJECT_NUMBER=497xxxxxxxx
 set REGION=us-central1
 set REPO=user-api-repo
 set IMAGE=user-api
+```
 
 ------------------------------------------------------------------------
 
 ### 1.7.2. Enable Required APIs
 
+```bash
 gcloud services enable artifactregistry.googleapis.com cloudbuild.googleapis.com run.googleapis.com logging.googleapis.com
+```
 
 ------------------------------------------------------------------------
 
@@ -136,6 +141,7 @@ gcloud services enable artifactregistry.googleapis.com cloudbuild.googleapis.com
 
 Grant minimal required permissions:
 
+```bash
 gcloud projects add-iam-policy-binding %PROJECT_ID% --member="serviceAccount:%PROJECT_NUMBER%-compute@developer.gserviceaccount.com" --role="roles/logging.logWriter"
 
 gcloud projects add-iam-policy-binding %PROJECT_ID% --member="serviceAccount:%PROJECT_NUMBER%@cloudbuild.gserviceaccount.com" --role="roles/run.admin"
@@ -149,22 +155,25 @@ gcloud projects add-iam-policy-binding %PROJECT_ID% --member="serviceAccount:%PR
 gcloud projects add-iam-policy-binding %PROJECT_ID% --member="serviceAccount:%PROJECT_NUMBER%-compute@developer.gserviceaccount.com" --role="roles/iam.serviceAccountUser"
 
 gcloud projects add-iam-policy-binding %PROJECT_ID% --member="serviceAccount:%PROJECT_NUMBER%-compute@developer.gserviceaccount.com" --role="roles/artifactregistry.writer"
-
+```
 
 
 ------------------------------------------------------------------------
 
 ### 1.7.4. Create Artifact Registry Repository
 
+```bash
 gcloud artifacts repositories create %REPO% --repository-format=docker --location=%REGION% --description="Docker repository for user-api"
+```
 
 ------------------------------------------------------------------------
 
 ### 1.7.5. Build & Push Container
 
+```bash
 gcloud builds submit --tag %REGION%-docker.pkg.dev/%PROJECT_ID%/%REPO%/%IMAGE%
-
 gcloud run deploy %IMAGE% --image %REGION%-docker.pkg.dev/%PROJECT_ID%/%REPO%/%IMAGE% --region %REGION% --platform managed --allow-unauthenticated
+```
 
 or:
 
@@ -202,6 +211,18 @@ Example: https://user-api-497xxxxxxxx.us-central1.run.app/api/v1/docs
 curl -X POST https://user-api-497xxxxxxxx.us-central1.run.app/users -H
 "Content-Type: application/json" -d
 "{"username":"alex","email":"alex@test.com","role":"admin"}"
+
+### Import Postman Collection
+
+Import from:
+
+postman/users.postman_collection.json
+
+```bash
+https://github.com/alunach/PyAPIChallenge/tree/main/postman
+```
+
+
 
 ------------------------------------------------------------------------
 
